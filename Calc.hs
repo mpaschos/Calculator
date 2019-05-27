@@ -1,3 +1,5 @@
+module Calc where
+
 import Control.Monad
 import Data.Char
 import System.IO
@@ -14,16 +16,18 @@ prompt text = do
 calculator = do
   x <- prompt "calc>"
   putStrLn x
-  -- putStrLn "Expression tokenized: " ++ (show tokenize x)
   print $ tokenize x
   calculator
 
 
+evalOutput result = result
 
-tokenize expr
+
+tokenize str
   | length expr < 3 = Left ("Ill-formatted expression: " ++ expr)
   | otherwise = Right ("Eval: " ++ show result)
       where
+        expr = trimWhiteSpace str
         lexemes = words expr
         left = read (lexemes !! 0) :: Int
         right = read (lexemes !! 2) :: Int
@@ -33,16 +37,16 @@ tokenize expr
 
 
 
+trimWhiteSpace :: String -> String
+trimWhiteSpace expr
+  | null expr = []
+  | otherwise = [c| c <- expr, not $ isSpace c]
 
--- takeInput :: IO [Char] -> IO Maybe Int
-takeInput = do
-  x <- getChar
-  if isNumber x
-    then 
-      -- num = read $ x :: Int
-      return (Just x)
-  else
-    return Nothing  
+
+
+
+
+
 
 
 main = do

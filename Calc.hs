@@ -1,8 +1,9 @@
-module Calc where
+module Main where
 
 import Control.Monad
 import Data.Char
 import System.IO
+import Data.Typeable
 
 
 prompt :: String -> IO String
@@ -12,6 +13,12 @@ prompt text = do
     getLine
 
 
+op :: Fractional a => Char -> a -> a -> a
+op '+' = (+)
+op '-' = (-)
+op '*' = (*)
+op '/' = (/)
+
 
 calculator = do
   x <- prompt "calc>"
@@ -20,29 +27,24 @@ calculator = do
   calculator
 
 
-evalOutput result = result
+
+tokenize expr
+  | isValidNumber (show result) == True = Just result  
+  | otherwise = Nothing      
+    where
+      left = trimSpaces $ takeWhile (/='+') expr
+      right = trimSpaces $ tail $ dropWhile (/='+') expr
+      action = head $ trimSpaces $ dropWhile (/='+') expr
+      result = (read left :: Integer) + (read right :: Integer)
 
 
-tokenize str
-  | length expr < 3 = Left ("Ill-formatted expression: " ++ expr)
-  | otherwise = Right ("Eval: " ++ show result)
-      where
-        expr = trimWhiteSpace str
-        lexemes = words expr
-        left = read (lexemes !! 0) :: Int
-        right = read (lexemes !! 2) :: Int
-        result = left + right
+isValidNumber val
+  | all isNumber val == True = True
+  | otherwise = False
 
 
-
-
-
-trimWhiteSpace :: String -> String
-trimWhiteSpace expr
-  | null expr = []
-  | otherwise = [c| c <- expr, not $ isSpace c]
-
-
+trimSpaces :: String -> String
+trimSpaces expr = filter (not . isSpace) expr
 
 
 

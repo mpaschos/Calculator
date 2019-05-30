@@ -55,18 +55,34 @@ hasDot val
   | (length $ filter (=='.') val) == 1 = True
   | otherwise = False
   
-
-
--- parseNumber str = 
---   | read "str" :: Integer 
-
 trimSpaces :: String -> String
 trimSpaces expr = filter (not . isSpace) expr
 
 
+parseLeftTerm expr
+  | null expr = Nothing
+  | expr == [] = Nothing
+  | otherwise = Just (trimSpaces $ takeWhile (/='+') expr)
 
 
+parseRightTerm expr
+  | null expr = Nothing
+  | expr == [] = Nothing
+  | otherwise = Just (trimSpaces $ tail $ dropWhile (/='+') expr)
 
+parseOp expr
+  | null expr = Nothing
+  | expr == [] = Nothing
+  | otherwise = Just (head $ trimSpaces $ dropWhile (/='+') expr)
+
+
+strToInt term 
+ | isValidInt term = Just (read term :: Integer)
+ | otherwise = Nothing     
+
+strToDouble term 
+ | isValidDouble term = Just (read term :: Double)
+ | otherwise = Nothing    
 
 main = do
   calculator

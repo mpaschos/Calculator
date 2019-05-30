@@ -33,10 +33,8 @@ tokenize expr
   | isValidNumber (show result) == True = Just result  
   | otherwise = Nothing      
     where
-      left = trimSpaces $ takeWhile (/='+') expr
-      right = trimSpaces $ tail $ dropWhile (/='+') expr
       action = head $ trimSpaces $ dropWhile (/='+') expr
-      result = op (action) 4 3--(read left :: Integer) (read right :: Integer)
+      result = op action <$> parseLeftTerm expr <*> parseRightTerm expr
 
 
 isValidNumber val
@@ -62,13 +60,13 @@ trimSpaces expr = filter (not . isSpace) expr
 parseLeftTerm expr
   | null expr = Nothing
   | expr == [] = Nothing
-  | otherwise = Just (trimSpaces $ takeWhile (/='+') expr)
+  | otherwise = parseNum (trimSpaces $ takeWhile (/='+') expr)
 
 
 parseRightTerm expr
   | null expr = Nothing
   | expr == [] = Nothing
-  | otherwise = Just (trimSpaces $ tail $ dropWhile (/='+') expr)
+  | otherwise = parseNum (trimSpaces $ tail $ dropWhile (/='+') expr)
 
 parseOp expr
   | null expr = Nothing
@@ -76,13 +74,14 @@ parseOp expr
   | otherwise = Just (head $ trimSpaces $ dropWhile (/='+') expr)
 
 
-strToInt term 
- | isValidInt term = Just (read term :: Integer)
- | otherwise = Nothing     
+strToInt term = read term :: Integer
+  
+strToDouble term = read term :: Double   
 
-strToDouble term 
- | isValidDouble term = Just (read term :: Double)
- | otherwise = Nothing    
+
+parseNum term
+  | isValidNumber term = Just (strToDouble term)
+  | otherwise = Nothing
 
 main = do
   calculator

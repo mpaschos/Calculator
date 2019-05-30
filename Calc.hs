@@ -23,14 +23,13 @@ op '/' = (/)
 
 calculator = do
   x <- prompt "calc>"
-  putStrLn x
-  print $ tokenize x
+  print $ eval x
   calculator
 
 
 
-tokenize expr
-  | isValidNumber (show result) == True = Just result  
+eval expr
+  | not $ containsLetters expr = result  
   | otherwise = Nothing      
     where
       action = head $ trimSpaces $ dropWhile (/='+') expr
@@ -53,6 +52,11 @@ hasDot val
   | (length $ filter (=='.') val) == 1 = True
   | otherwise = False
   
+containsLetters val
+  | filter (isLetter) val /= "" = True
+  | otherwise = False
+
+
 trimSpaces :: String -> String
 trimSpaces expr = filter (not . isSpace) expr
 

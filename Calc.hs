@@ -12,14 +12,6 @@ prompt text = do
     hFlush stdout
     getLine
 
-
-op :: Fractional a => Char -> a -> a -> a
-op '+' = (+)
-op '-' = (-)
-op '*' = (*)
-op '/' = (/)
-
-
 --Main loop - REPL
 calculator = do
   x <- prompt "calc>"
@@ -33,12 +25,35 @@ calculator = do
   calculator
 
 
+op :: Fractional a => Char -> a -> a -> a
+op '+' = (+)
+op '-' = (-)
+op '*' = (*)
+op '/' = (/)
+
+
+nameOfOp :: Char -> String
+nameOfOp '+' = "ADD"
+nameOfOp '-' = "SUB"
+nameOfOp '*' = "MUL"
+nameOfOp '/' = "DIV"
+
+
+isOperator :: Char -> Bool
+isOperator op
+  | op == '+' = True
+  | op == '-' = True
+  | op == '*' = True
+  | op == '/' = True
+  | otherwise = False
+
+
 
 eval expr
   | not $ containsLetters expr = result  
   | otherwise = Nothing      
     where
-      action = head $ trimSpaces $ dropWhile (/='+') expr
+      action = head $ trimSpaces $ dropWhile (not . isOperator) expr
       result = op action <$> parseLeftTerm expr <*> parseRightTerm expr
 
 
@@ -70,18 +85,18 @@ trimSpaces expr = filter (not . isSpace) expr
 parseLeftTerm expr
   | null expr = Nothing
   | expr == [] = Nothing
-  | otherwise = parseNum (trimSpaces $ takeWhile (/='+') expr)
+  | otherwise = parseNum (trimSpaces $ takeWhile (not . isOperator) expr)
 
 
 parseRightTerm expr
   | null expr = Nothing
   | expr == [] = Nothing
-  | otherwise = parseNum (trimSpaces $ tail $ dropWhile (/='+') expr)
+  | otherwise = parseNum (trimSpaces $ tail $ dropWhile (not . isOperator) expr)
 
 parseOp expr
   | null expr = Nothing
   | expr == [] = Nothing
-  | otherwise = Just (head $ trimSpaces $ dropWhile (/='+') expr)
+  | otherwise = Just (head $ trimSpaces $ dropWhile (not . isOperator) expr)
 
 
 strToInt term = read term :: Integer

@@ -81,6 +81,11 @@ containsLetters val
 trimSpaces :: String -> String
 trimSpaces expr = filter (not . isSpace) expr
 
+strToInt :: String -> Integer
+strToInt term = read term :: Integer
+
+strToDouble :: String -> Double
+strToDouble term = read term :: Double   
 
 parseLeftTerm expr
   | null expr = Nothing
@@ -93,19 +98,25 @@ parseRightTerm expr
   | expr == [] = Nothing
   | otherwise = parseNum (trimSpaces $ tail $ dropWhile (not . isOperator) expr)
 
+
 parseOp expr
   | null expr = Nothing
   | expr == [] = Nothing
   | otherwise = Just (head $ trimSpaces $ dropWhile (not . isOperator) expr)
 
 
-strToInt term = read term :: Integer
-  
-strToDouble term = read term :: Double   
-
 parseNum term
   | isValidNumber term = Just (strToDouble term)
   | otherwise = Nothing
+
+
+
+
+
+
+
+
+
 
 
 main = do

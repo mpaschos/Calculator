@@ -20,7 +20,7 @@ op '*' = (*)
 op '/' = (/)
 
 
-
+--Main loop - REPL
 calculator = do
   x <- prompt "calc>"
   
@@ -29,6 +29,7 @@ calculator = do
     Just n  -> print $ n
     Nothing -> print $ "Parsing error"
   
+  --Recursive call to calculator
   calculator
 
 
@@ -87,10 +88,10 @@ strToInt term = read term :: Integer
   
 strToDouble term = read term :: Double   
 
-
 parseNum term
   | isValidNumber term = Just (strToDouble term)
   | otherwise = Nothing
+
 
 main = do
   calculator

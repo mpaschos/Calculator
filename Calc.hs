@@ -23,7 +23,12 @@ op '/' = (/)
 
 calculator = do
   x <- prompt "calc>"
-  print $ eval x
+  
+  --In case of valid parsing print the result without the 'Just', else print 'Parsing error'
+  case (eval x) of
+    Just n  -> print $ n
+    Nothing -> print $ "Parsing error"
+  
   calculator
 
 
